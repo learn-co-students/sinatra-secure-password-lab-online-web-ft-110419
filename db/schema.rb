@@ -16,7 +16,6 @@ ActiveRecord::Schema.define(version: 1) do
     t.string "username"
     t.string "password"
     t.string "password_digest"
-    t.decimal "balance"
   end
 
 end
