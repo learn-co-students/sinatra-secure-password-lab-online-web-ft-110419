@@ -18,7 +18,14 @@ class ApplicationController < Sinatra::Base
 
   post "/signup" do
     #your code here
+    if params.values.any? { |v| v.blank? }
+      redirect '/failure'
+    else
+      user = User.create(username: params[:username], password: params[:password])
+      session[:user_id] = user.id
 
+      redirect '/login'
+    end
   end
 
   get '/account' do
@@ -33,6 +40,14 @@ class ApplicationController < Sinatra::Base
 
   post "/login" do
     ##your code here
+    @user = User.find_by(username: params[:username])
+
+    if @user && @user.authenticate(params[:password])
+      session[:user_id] = @user.id
+      redirect '/account'
+    else
+      redirect '/failure'
+    end
   end
 
   get "/failure" do
@@ -50,7 +65,7 @@ class ApplicationController < Sinatra::Base
     end
 
     def current_user
-      User.find(session[:user_id])
+      User.find_by(id: session[:user_id])
     end
   end
 
